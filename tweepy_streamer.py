@@ -7,6 +7,7 @@ from tweepy import Stream
 import twitter_credentials
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 ### TWITTER CLIENT ###
 class TwitterClient():
@@ -109,8 +110,29 @@ if __name__ == "__main__":
     tweet_analyzer = TweetAnalyzer()
     api = twitter_client.get_twitter_client_api()
 
-    tweets = api.user_timeline(screen_name="lopezobrador_", count=20)
+    tweets = api.user_timeline(screen_name="lopezobrador_", count=200)
     df = tweet_analyzer.tweets_to_data_frame(tweets)
-    #print(dir(tweets[0]))
-    #print(tweets[0].retweet_count)
     print(df)
+
+    # Estadísticas
+    # Get average length over all tweets
+    print("Longitud promedio del tweet: {}".format(np.mean(df['len'])))
+
+    # Get the number of likes for the most liked tweet.
+    print("Máximo número de likes: {}".format(np.max(df['likes'])))
+
+    # Get the number of retweets for the most retweeted tweet
+    print("Máximo número de retweets: {}".format(np.max(df['retweets'])))
+
+    # Time series
+    time_likes = pd.Series(data=df['likes'].values, index=df['date'])
+    time_likes.plot(figsize=(16,4), label = "likes" , legend= True)
+
+    time_retweets = pd.Series(data=df['retweets'].values, index=df['date'])
+    time_retweets.plot(figsize=(16,4), label = "retweets" , legend= True)
+
+    plt.title('Cuenta de Twitter del Presidente de México')
+    plt.xlabel('fecha')
+    plt.ylabel('cuenta')
+    plt.xticks(rotation='vertical')
+    plt.show()
