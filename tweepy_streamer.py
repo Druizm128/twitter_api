@@ -101,8 +101,11 @@ class TweetAnalyzer():
         df['source'] = np.array([tweet.source for tweet in tweets])
         df['likes'] = np.array([tweet.favorite_count for tweet in tweets])
         df['retweets'] = np.array([tweet.retweet_count for tweet in tweets])
+        #df['coordinates'] = np.array([tweet.coordinates for tweet in tweets])
+        #df['geo'] = np.array([tweet.geo for tweet in tweets])
+        #df['place'] = np.array([tweet.place for tweet in tweets])
+        df.to_csv("tweets.csv",index=False)
         return df
-
 
 if __name__ == "__main__":
 
@@ -112,27 +115,5 @@ if __name__ == "__main__":
 
     tweets = api.user_timeline(screen_name="lopezobrador_", count=200)
     df = tweet_analyzer.tweets_to_data_frame(tweets)
+
     print(df)
-
-    # Estadísticas
-    # Get average length over all tweets
-    print("Longitud promedio del tweet: {}".format(np.mean(df['len'])))
-
-    # Get the number of likes for the most liked tweet.
-    print("Máximo número de likes: {}".format(np.max(df['likes'])))
-
-    # Get the number of retweets for the most retweeted tweet
-    print("Máximo número de retweets: {}".format(np.max(df['retweets'])))
-
-    # Time series
-    time_likes = pd.Series(data=df['likes'].values, index=df['date'])
-    time_likes.plot(figsize=(16,4), label = "likes" , legend= True)
-
-    time_retweets = pd.Series(data=df['retweets'].values, index=df['date'])
-    time_retweets.plot(figsize=(16,4), label = "retweets" , legend= True)
-
-    plt.title('Cuenta de Twitter del Presidente de México')
-    plt.xlabel('fecha')
-    plt.ylabel('cuenta')
-    plt.xticks(rotation='vertical')
-    plt.show()
